@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="رفيق المترو - مساعد ذكي للتنقل الآمن داخل المترو">
+    <title>رفيق المترو | Metro Companion</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="ambient ambient-a"></div>
+    <div class="ambient ambient-b"></div>
+
+    <section class="login-screen" id="loginScreen">
+        <div class="login-shell">
+            <div class="login-copy">
+                <span class="eyebrow">AI-Powered Safety</span>
+                <h1>رفيق المترو</h1>
+                <p>
+                    تجربة عربية حديثة تساعدك على اختيار المسار الأنسب، متابعة الرحلة بأمان،
+                    والحصول على تنبيه صوتي ومساعدة سريعة عند الحاجة.
+                </p>
+                <div class="feature-pills">
+                    <span>🚇 تخطيط ذكي</span>
+                    <span>🛡️ توصيات أمان</span>
+                    <span>🔊 تنبيه الوصول</span>
+                </div>
+            </div>
+
+            <div class="login-card">
+                <div class="brand-mark">
+                    <div class="brand-icon">🚇</div>
+                    <div>
+                        <strong>Metro Companion</strong>
+                        <p>نسخة ويب جاهزة للتشغيل المباشر</p>
+                    </div>
+                </div>
+
+                <form id="loginForm" class="stack">
+                    <label class="field">
+                        <span>الاسم</span>
+                        <input type="text" id="loginName" placeholder="اكتب اسمك" required>
+                    </label>
+
+                    <label class="field">
+                        <span>كلمة المرور</span>
+                        <input type="password" id="loginPassword" placeholder="أي كلمة مرور للتجربة" required>
+                    </label>
+
+                    <label class="remember-row">
+                        <input type="checkbox" id="rememberMe">
+                        <span>تذكرني على هذا الجهاز</span>
+                    </label>
+
+                    <button type="submit" class="btn btn-primary">دخول آمن</button>
+                    <button type="button" class="btn btn-secondary" id="guestLoginBtn">دخول كزائر</button>
+                </form>
+
+                <div class="helper-note">
+                    <span>ℹ️</span>
+                    <p>هذا نظام دخول تجريبي بدون خادم، ويتم حفظ البيانات محليًا فقط.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <div class="app-shell hidden" id="appShell">
+        <header class="topbar">
+            <div class="brand-line">
+                <div class="brand-icon small">🚇</div>
+                <div>
+                    <h2>رفيق المترو</h2>
+                    <p id="liveClock">جاهز للمساعدة</p>
+                </div>
+            </div>
+
+            <div class="topbar-actions">
+                <span class="status-pill" id="networkBadge">تشغيل محلي آمن</span>
+                <button class="icon-btn" id="profileShortcut" aria-label="الملف الشخصي">👤</button>
+            </div>
+        </header>
+
+        <main class="page-wrap">
+            <section class="page active" id="homePage" data-page="home">
+                <div class="hero-card glass">
+                    <div>
+                        <span class="eyebrow">مرحبا بك</span>
+                        <h3>رحلتك داخل المترو أصبحت أوضح وأكثر أمانًا</h3>
+                        <p id="welcomeText">
+                            استخدم المخطط الذكي لمعرفة المسار، أقل عربات ازدحامًا، وأفضل توصيات السلامة أثناء الرحلة.
+                        </p>
+                    </div>
+                    <div class="hero-orb">
+                        <span>🛡️</span>
+                    </div>
+                </div>
+
+                <section class="stats-grid">
+                    <article class="stat-card">
+                        <span class="stat-label">الوجهة الحالية</span>
+                        <strong id="currentDestinationLabel">لم يتم الاختيار بعد</strong>
+                        <small>سيتم استخدامها في تنبيه الوصول</small>
+                    </article>
+                    <article class="stat-card">
+                        <span class="stat-label">أقل خط ازدحامًا الآن</span>
+                        <strong id="leastCrowdedNow">جارٍ التحليل...</strong>
+                        <small id="leastCrowdedTime">يتم تحديث المحاكاة تلقائيًا</small>
+                    </article>
+                    <article class="stat-card">
+                        <span class="stat-label">آخر مسار محسوب</span>
+                        <strong id="lastRouteSummary">لم يتم التخطيط بعد</strong>
+                        <small id="lastRouteMeta">اختر محطة البداية والوجهة</small>
+                    </article>
+                </section>
+
+                <section class="quick-grid">
+                    <button class="feature-card nav-shortcut" data-target="planner">
+                        <span class="card-icon">🧭</span>
+                        <strong>مخطط الرحلة</strong>
+                        <p>ابدأ من محطة وحدد الوجهة لنقترح أفضل مسار وأكثره أمانًا.</p>
+                    </button>
+                    <button class="feature-card nav-shortcut" data-target="map">
+                        <span class="card-icon">🗺️</span>
+                        <strong>خريطة المترو</strong>
+                        <p>خريطة حية محاكية مع تمييز المحطات المشتركة وتحديثات الازدحام.</p>
+                    </button>
+                    <button class="feature-card nav-shortcut" data-target="emergency">
+                        <span class="card-icon">🚨</span>
+                        <strong>طلب مساعدة</strong>
+                        <p>إرسال تنبيه تجريبي ومشاركة موقع الرحلة الحالي بشكل فوري.</p>
+                    </button>
+                    <button class="feature-card" id="openChatFromHome">
+                        <span class="card-icon">🤖</span>
+                        <strong>المساعد الذكي</strong>
+                        <p>اسأل عن أقرب محطة، الأمان، أو ماذا تفعل إذا شعرت بالخطر.</p>
+                    </button>
+                </section>
+
+                <section class="panel-grid">
+                    <article class="panel-card">
+                        <div class="section-heading">
+                            <h4>حالة الخطوط الآن</h4>
+                            <span class="soft-badge">محاكاة مباشرة</span>
+                        </div>
+                        <div id="lineStatusBoard" class="status-board"></div>
+                    </article>
+
+                    <article class="panel-card">
+                        <div class="section-heading">
+                            <h4>نصائح أمان سريعة</h4>
+                            <span class="soft-badge">مهم أثناء الازدحام</span>
+                        </div>
+                        <div class="tip-list">
+                            <div class="tip-item">
+                                <span>1</span>
+                                <p>اختر العربة الأقرب للسائق أو الأقرب للكاميرات إذا شعرت بعدم الارتياح.</p>
+                            </div>
+                            <div class="tip-item">
+                                <span>2</span>
+                                <p>شارك تفاصيل الرحلة مع جهة اتصال موثوقة في الأوقات المتأخرة.</p>
+                            </div>
+                            <div class="tip-item">
+                                <span>3</span>
+                                <p>استخدم زر المساعدة فورًا عند وجود مضايقة أو ملاحقة أو موقف مريب.</p>
+                            </div>
+                        </div>
+                    </article>
+                </section>
+            </section>
+
+            <section class="page" id="plannerPage" data-page="planner">
+                <div class="page-intro">
+                    <span class="eyebrow">Route Planner</span>
+                    <h3>خطط الرحلة وحدد تنبيه الوصول</h3>
+                    <p>اختر محطة البداية والوجهة، وسنقترح المسار الأقرب للأمان والأقل ازدحامًا قدر الإمكان.</p>
+                </div>
+
+                <div class="planner-layout">
+                    <article class="panel-card">
+                        <form id="routeForm" class="stack">
+                            <label class="field">
+                                <span>محطة البداية</span>
+                                <select id="startStation" required></select>
+                            </label>
+
+                            <label class="field">
+                                <span>محطة الوصول</span>
+                                <select id="endStation" required></select>
+                            </label>
+
+                            <div class="button-row">
+                                <button type="submit" class="btn btn-primary">عرض أفضل مسار</button>
+                                <button type="button" class="btn btn-ghost" id="swapStationsBtn">تبديل المحطتين</button>
+                            </div>
+                        </form>
+                    </article>
+
+                    <article class="panel-card voice-panel">
+                        <div class="section-heading">
+                            <h4>تنبيه الوصول الصوتي</h4>
+                            <span class="soft-badge" id="voiceDestinationStatus">الوجهة غير محددة</span>
+                        </div>
+
+                        <p class="muted">
+                            عند الضغط على زر التنبيه سيتم تشغيل رسالة صوتية بالعربية إن توفرت، مع اهتزاز وصوت تنبيه اختياري.
+                        </p>
+
+                        <label class="toggle-row">
+                            <input type="checkbox" id="soundToggle">
+                            <span>تشغيل صوت تنبيه قبل الرسالة</span>
+                        </label>
+
+                        <div class="button-row">
+                            <button type="button" class="btn btn-primary" id="arrivalAlertBtn">🔊 تنبيه الوصول</button>
+                            <button type="button" class="btn btn-secondary" id="testVoiceBtn">Test Voice</button>
+                        </div>
+
+                        <div class="voice-note" id="voiceFeedback">
+                            اختر محطة وصول أولًا لتفعيل الرسالة: "لقد وصلت إلى محطة ..."
+                        </div>
+                    </article>
+                </div>
+
+                <article class="panel-card route-result-card">
+                    <div class="section-heading">
+                        <h4>نتيجة التخطيط</h4>
+                        <span class="soft-badge">AI Safety Suggestion</span>
+                    </div>
+                    <div id="routeResult" class="route-placeholder">
+                        اختر المحطتين ثم اضغط "عرض أفضل مسار" للحصول على المسار والوقت ومحطة التبديل وتوصيات الأمان.
+                    </div>
+                </article>
+            </section>
+
+            <section class="page" id="mapPage" data-page="map">
+                <div class="page-intro">
+                    <span class="eyebrow">Metro Map</span>
+                    <h3>خريطة مترو محاكية مع حالة الخطوط</h3>
+                    <p>اضغط على أي محطة داخل الخريطة لتحديدها كوجهة سريعة لتنبيه الوصول.</p>
+                </div>
+
+                <section class="panel-card">
+                    <div class="section-heading">
+                        <h4>لوحة المتابعة المباشرة</h4>
+                        <span class="soft-badge" id="mapRefreshLabel">آخر تحديث الآن</span>
+                    </div>
+                    <div id="liveMapBoard" class="status-board"></div>
+                </section>
+
+                <section class="map-layout" id="mapLayout"></section>
+            </section>
+
+            <section class="page" id="emergencyPage" data-page="emergency">
+                <div class="page-intro">
+                    <span class="eyebrow">Emergency Tools</span>
+                    <h3>استجابة سريعة ومناطق آمنة</h3>
+                    <p>في حال التعرض للمضايقة أو الشعور بالخطر، استخدم الأدوات التالية فورًا.</p>
+                </div>
+
+                <div class="panel-grid">
+                    <article class="panel-card emergency-card strong-border">
+                        <div class="section-heading">
+                            <h4>طلب مساعدة فوري</h4>
+                            <span class="soft-badge danger">أولوية</span>
+                        </div>
+                        <p class="muted">
+                            يرسل تنبيهًا تجريبيًا، ويعرض مشاركة موقع محاكاة بناءً على آخر رحلة أو الوجهة الحالية.
+                        </p>
+                        <div class="button-row">
+                            <button type="button" class="btn btn-danger" id="helpRequestBtn">طلب مساعدة</button>
+                            <button type="button" class="btn btn-ghost" id="shareLocationBtn">مشاركة الموقع</button>
+                        </div>
+                        <div id="helpStatus" class="emergency-status">
+                            لا توجد طلبات مساعدة مرسلة حتى الآن.
+                        </div>
+                    </article>
+
+                    <article class="panel-card">
+                        <div class="section-heading">
+                            <h4>تحليل موقف مريب</h4>
+                            <span class="soft-badge">ذكاء اصطناعي محاكي</span>
+                        </div>
+                        <label class="field">
+                            <span>اكتب ما يحدث معك</span>
+                            <textarea id="riskInput" rows="5" placeholder="مثال: أنا حاسس إن حد بيتبعني في المحطة أو في العربية..."></textarea>
+                        </label>
+                        <button type="button" class="btn btn-primary" id="riskAnalyzeBtn">تحليل الموقف</button>
+                        <div id="riskResult" class="analysis-box">
+                            اكتب وصفًا قصيرًا للموقف وسنقترح مستوى الخطورة والخطوات التالية.
+                        </div>
+                    </article>
+                </div>
+
+                <section class="panel-card">
+                    <div class="section-heading">
+                        <h4>أماكن آمنة قريبة</h4>
+                        <span class="soft-badge">بيانات تجريبية</span>
+                    </div>
+                    <div id="safePlacesList" class="safe-grid"></div>
+                </section>
+            </section>
+
+            <section class="page" id="profilePage" data-page="profile">
+                <div class="page-intro">
+                    <span class="eyebrow">Profile</span>
+                    <h3>بيانات المستخدم وتفضيلات السلامة</h3>
+                    <p>يتم حفظ هذه البيانات محليًا داخل المتصفح لتحسين تجربة الاستخدام.</p>
+                </div>
+
+                <div class="panel-grid">
+                    <article class="panel-card">
+                        <div class="section-heading">
+                            <h4>الملف الشخصي</h4>
+                            <span class="soft-badge">Local Storage</span>
+                        </div>
+                        <form id="profileForm" class="stack">
+                            <label class="field">
+                                <span>الاسم</span>
+                                <input type="text" id="profileName" placeholder="اسم المستخدم">
+                            </label>
+                            <label class="field">
+                                <span>رقم للطوارئ</span>
+                                <input type="tel" id="profileEmergencyPhone" placeholder="01000000000">
+                            </label>
+                            <label class="field">
+                                <span>المحطة المفضلة</span>
+                                <select id="profileFavoriteStation"></select>
+                            </label>
+                            <label class="toggle-row">
+                                <input type="checkbox" id="profileVibrationToggle">
+                                <span>تفعيل الاهتزاز مع تنبيه الوصول</span>
+                            </label>
+                            <button type="submit" class="btn btn-primary">حفظ البيانات</button>
+                        </form>
+                    </article>
+
+                    <article class="panel-card">
+                        <div class="section-heading">
+                            <h4>ملخص الاستخدام</h4>
+                            <span class="soft-badge">آخر الأنشطة</span>
+                        </div>
+                        <div id="profileSummary" class="summary-box"></div>
+                        <div class="button-row">
+                            <button type="button" class="btn btn-secondary" id="openChatFromProfile">فتح المساعد الذكي</button>
+                            <button type="button" class="btn btn-ghost" id="logoutBtn">تسجيل الخروج</button>
+                        </div>
+                    </article>
+                </div>
+            </section>
+        </main>
+
+        <nav class="bottom-nav">
+            <button class="nav-item active" data-page="home">🏠<span>الرئيسية</span></button>
+            <button class="nav-item" data-page="planner">🧭<span>المسار</span></button>
+            <button class="nav-item" data-page="map">🗺️<span>الخريطة</span></button>
+            <button class="nav-item" data-page="emergency">🚨<span>طوارئ</span></button>
+            <button class="nav-item" data-page="profile">👤<span>الملف</span></button>
+        </nav>
+    </div>
+
+    <button class="chat-fab hidden" id="chatFab" aria-label="فتح المساعد الذكي">💬</button>
+
+    <aside class="chat-panel hidden" id="chatPanel" aria-live="polite">
+        <div class="chat-header">
+            <div>
+                <strong>المساعد الذكي</strong>
+                <p>إرشاد سريع داخل المترو</p>
+            </div>
+            <button class="icon-btn" id="closeChatBtn" aria-label="إغلاق الدردشة">✕</button>
+        </div>
+
+        <div class="chat-quick" id="chatQuickActions">
+            <button class="quick-chip" data-prompt="أركب منين؟">أركب منين؟</button>
+            <button class="quick-chip" data-prompt="إيه أقرب محطة؟">إيه أقرب محطة؟</button>
+            <button class="quick-chip" data-prompt="أنا حاسس بخطر">أنا حاسس بخطر</button>
+            <button class="quick-chip" data-prompt="أقل خط ازدحامًا دلوقتي؟">أقل خط ازدحامًا؟</button>
+        </div>
+
+        <div class="chat-body" id="chatMessages"></div>
+
+        <form class="chat-form" id="chatForm">
+            <input type="text" id="chatInput" placeholder="اكتب سؤالك هنا...">
+            <button type="submit" class="btn btn-primary compact">إرسال</button>
+        </form>
+    </aside>
+
+    <div class="toast-stack" id="toastStack"></div>
+
+    <script src="script.js"></script>
+</body>
+</html>
